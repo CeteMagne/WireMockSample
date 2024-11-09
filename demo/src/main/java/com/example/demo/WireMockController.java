@@ -13,8 +13,14 @@ public class WireMockController {
 
     @GetMapping("/display-message")
     public String displayMessage(Model model) {
-        String message = wireMockClient.sendRequest();
-        model.addAttribute("message", message);
+        // リクエストを送信し、レスポンスとメッセージを取得
+        wireMockClient.sendRequest();
+
+        // モデルにリクエスト、レスポンス、メッセージの値を追加
+        model.addAttribute("requestJson", wireMockClient.getRequestJson());
+        model.addAttribute("responseJson", wireMockClient.getResponseJson());
+        model.addAttribute("extractedMessage", wireMockClient.getExtractedMessage());
+
         return "message";
     }
 }
