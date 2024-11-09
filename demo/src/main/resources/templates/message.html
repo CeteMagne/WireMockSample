@@ -4,19 +4,48 @@
     <meta charset="UTF-8">
     <title>WireMock Response</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <script>
+        function sendRequest() {
+            // リクエストが送信されたことを示すため、既存の内容をクリアし「ロード中」を表示
+            document.getElementById("requestJson").textContent = "リクエスト送信中...";
+            document.getElementById("responseJson").textContent = "レスポンス待機中...";
+            document.getElementById("extractedMessage").textContent = "メッセージ抽出中...";
+
+            // サーバーに非同期リクエストを送信
+            fetch('/api/send-request')
+                .then(response => response.json())
+                .then(data => {
+                    // レスポンスデータを各要素に表示
+                    document.getElementById("requestJson").textContent = data.requestJson;
+                    document.getElementById("responseJson").textContent = data.responseJson;
+                    document.getElementById("extractedMessage").textContent = data.extractedMessage;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // エラー発生時のメッセージ
+                    document.getElementById("requestJson").textContent = "リクエストエラー";
+                    document.getElementById("responseJson").textContent = "レスポンスエラー";
+                    document.getElementById("extractedMessage").textContent = "メッセージ抽出エラー";
+                });
+        }
+    </script>
 </head>
 <body>
+    <h1>WireMockからのメッセージ</h1>
+    
+    <button onclick="sendRequest()">リクエストを送信</button>
+    
     <div class="section">
         <h2>リクエスト (JSON):</h2>
-        <div class="json-display" th:text="${requestJson}">ここにリクエストのJSONが表示されます</div>
+        <div id="requestJson" class="json-display">ここにリクエストのJSONが表示されます</div>
     </div>
     <div class="section">
         <h2>レスポンス (JSON):</h2>
-        <div class="json-display" th:text="${responseJson}">ここにレスポンスのJSONが表示されます</div>
+        <div id="responseJson" class="json-display">ここにレスポンスのJSONが表示されます</div>
     </div>
     <div class="section">
         <h2>抽出されたメッセージ:</h2>
-        <p th:text="${extractedMessage}">ここにメッセージが表示されます</p>
+        <p id="extractedMessage">ここにメッセージが表示されます</p>
     </div>
 </body>
 </html>
