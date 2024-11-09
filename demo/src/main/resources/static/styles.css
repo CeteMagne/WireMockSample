@@ -1,0 +1,22 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.section h2 {
+    background-color: #005f99;
+    color: white;
+    padding: 5px;
+}
+
+.json-display {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    white-space: pre-wrap;
+    font-family: monospace;
+}
