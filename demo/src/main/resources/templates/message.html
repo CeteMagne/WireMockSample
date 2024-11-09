@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>WireMock Response</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script>
+        function sendRequest() {
+            // 既存の内容をクリアし「ロード中」を表示
+            document.getElementById("requestJson").textContent = "リクエスト送信中...";
+            document.getElementById("responseJson").textContent = "レスポンス待機中...";
+            document.getElementById("extractedMessage").textContent = "メッセージ抽出中...";
+
+            // サーバーに非同期リクエストを送信
+            fetch('/api/send-request')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("requestJson").textContent = data.requestJson;
+                    document.getElementById("responseJson").textContent = data.responseJson;
+                    document.getElementById("extractedMessage").textContent = data.extractedMessage;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById("requestJson").textContent = "リクエストエラー";
+                    document.getElementById("responseJson").textContent = "レスポンスエラー";
+                    document.getElementById("extractedMessage").textContent = "メッセージ抽出エラー";
+                });
+        }
+
+        // 失敗するリクエストを送信する関数
+        function sendFaultyRequest() {
+            // 既存の内容をクリアし「ロード中」を表示
+            document.getElementById("requestJson").textContent = "リクエスト送信中...";
+            document.getElementById("responseJson").textContent = "レスポンス待機中...";
+            document.getElementById("extractedMessage").textContent = "メッセージ抽出中...";
+
+            // サーバーにエラーパターンの非同期リクエストを送信
+            fetch('/api/send-faulty-request')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("リクエストが失敗しました");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById("requestJson").textContent = data.requestJson;
+                    document.getElementById("responseJson").textContent = data.responseJson;
+                    document.getElementById("extractedMessage").textContent = data.extractedMessage;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById("requestJson").textContent = "リクエストエラー";
+                    document.getElementById("responseJson").textContent = "レスポンスエラー";
+                    document.getElementById("extractedMessage").textContent = "メッセージ抽出エラー";
+                });
+        }
+    </script>
+</head>
+<body>
+    <h1>WireMockからのメッセージ</h1>
+    
+    <button onclick="sendRequest()">正常リクエストを送信</button>
+    <button onclick="sendFaultyRequest()">エラーパターンのリクエストを送信</button>
+    
+    <div class="section">
+        <h2>リクエスト (JSON):</h2>
+        <div id="requestJson" class="json-display">ここにリクエストのJSONが表示されます</div>
+    </div>
+    <div class="section">
+        <h2>レスポンス (JSON):</h2>
+        <div id="responseJson" class="json-display">ここにレスポンスのJSONが表示されます</div>
+    </div>
+    <div class="section">
+        <h2>抽出されたメッセージ:</h2>
+        <p id="extractedMessage">ここにメッセージが表示されます</p>
+    </div>
+</body>
+</html>
